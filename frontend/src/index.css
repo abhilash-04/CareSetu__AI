@@ -1,0 +1,138 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: #0A0F1D;
+    color: #CBD5E1;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: #0D1424; }
+  ::-webkit-scrollbar-thumb { background: #2A364F; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #00F5D4; }
+}
+
+@layer components {
+  /* Glass card base */
+  .glass-card {
+    @apply bg-navy-700/80 backdrop-blur-md border border-navy-400/60 rounded-2xl shadow-card;
+  }
+  .glass-card-sm {
+    @apply bg-navy-700/60 backdrop-blur-sm border border-navy-400/40 rounded-xl shadow-card;
+  }
+
+  /* Neon inputs */
+  .neon-input {
+    @apply w-full bg-navy-800/80 border border-navy-400 rounded-lg px-3 py-2.5 text-sm
+           text-slate-200 placeholder-slate-500 outline-none transition-all duration-200
+           focus:border-[#00F5D4] focus:shadow-glow-cyan focus:bg-navy-800;
+  }
+  .neon-select {
+    @apply neon-input appearance-none cursor-pointer;
+  }
+
+  /* Section label */
+  .section-label {
+    @apply text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500 mb-3 flex items-center gap-2;
+  }
+
+  /* LED dot */
+  .led { @apply w-2 h-2 rounded-full; }
+  .led-green  { @apply led bg-emerald-neon shadow-glow-emerald; }
+  .led-red    { @apply led bg-coral-neon shadow-glow-coral; }
+  .led-amber  { @apply led bg-amber-neon shadow-glow-amber; }
+  .led-cyan   { @apply led bg-cyan-neon shadow-glow-cyan; }
+
+  /* Mono telemetry number */
+  .tele-num {
+    @apply font-mono text-2xl font-bold tracking-tight;
+  }
+}
+
+/* Animated waveform bars */
+.waveform-bar {
+  width: 3px;
+  border-radius: 2px;
+  background: #00F5D4;
+  animation: wave 1.2s ease-in-out infinite;
+  box-shadow: 0 0 6px rgba(0,245,212,0.7);
+}
+.waveform-bar:nth-child(2)  { animation-delay: 0.1s; }
+.waveform-bar:nth-child(3)  { animation-delay: 0.2s; }
+.waveform-bar:nth-child(4)  { animation-delay: 0.3s; }
+.waveform-bar:nth-child(5)  { animation-delay: 0.4s; }
+.waveform-bar:nth-child(6)  { animation-delay: 0.3s; }
+.waveform-bar:nth-child(7)  { animation-delay: 0.2s; }
+.waveform-bar:nth-child(8)  { animation-delay: 0.1s; }
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(0.3); }
+  50%       { transform: scaleY(1.4); }
+}
+
+/* Scan beam animation */
+@keyframes scanbeam {
+  0%   { top: -10%; opacity: 0.7; }
+  90%  { top: 110%; opacity: 0.5; }
+  100% { top: 110%; opacity: 0; }
+}
+.scan-beam {
+  position: absolute;
+  left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, #00F5D4, transparent);
+  box-shadow: 0 0 12px rgba(0,245,212,0.8);
+  animation: scanbeam 2.5s linear infinite;
+  pointer-events: none;
+}
+
+/* Heartbeat SVG path pulse */
+@keyframes dashMove {
+  from { stroke-dashoffset: 200; }
+  to   { stroke-dashoffset: 0; }
+}
+.heartbeat-path {
+  stroke-dasharray: 200;
+  stroke-dashoffset: 200;
+  animation: dashMove 1.6s linear infinite;
+}
+
+/* Circular SpO2 ring */
+@keyframes fillRing {
+  from { stroke-dashoffset: 220; }
+  to   { stroke-dashoffset: var(--ring-offset); }
+}
+.spo2-ring {
+  animation: fillRing 1.2s ease-out forwards;
+}
+
+/* Grid dot pattern overlay */
+.grid-dots {
+  background-image: radial-gradient(circle, rgba(42,54,79,0.6) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Gradient CTA button */
+.btn-triage {
+  background: linear-gradient(135deg, #00F5D4 0%, #0EA5E9 50%, #6366F1 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  @apply text-navy-900 font-bold tracking-widest text-sm uppercase rounded-xl
+         py-4 px-8 w-full transition-all duration-200
+         hover:scale-[1.01] hover:shadow-glow-cyan active:scale-[0.99]
+         disabled:opacity-50 disabled:cursor-not-allowed;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+/* Glowing left border card */
+.glow-border-left-cyan   { border-left: 3px solid #00F5D4; box-shadow: -4px 0 16px rgba(0,245,212,0.3); }
+.glow-border-left-coral  { border-left: 3px solid #FF2E93; box-shadow: -4px 0 16px rgba(255,46,147,0.3); }
+.glow-border-left-emerald{ border-left: 3px solid #10B981; box-shadow: -4px 0 16px rgba(16,185,129,0.3); }
+.glow-border-left-amber  { border-left: 3px solid #F59E0B; box-shadow: -4px 0 16px rgba(245,158,11,0.3); }
