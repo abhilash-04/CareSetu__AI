@@ -2,7 +2,7 @@ import os
 import json
 import re
 import base64
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 
 from dotenv import load_dotenv
@@ -38,23 +38,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount all extended feature endpoints (Features 1–10)
-app.include_router(features_router)
-
 # ---------------------------------------------------------------------------
 # API Clients
 # ---------------------------------------------------------------------------
 
-_groq_key = os.environ.get("GROQ_API_KEY", "")
+_groq_key: str = os.environ.get("GROQ_API_KEY", "")
 if not _groq_key:
     raise RuntimeError("GROQ_API_KEY is not set. Add it to your .env file or environment.")
 groq_client = Groq(api_key=_groq_key)
 
-_gemini_key = os.environ.get("GEMINI_API_KEY", "")
+_gemini_key: str = os.environ.get("GEMINI_API_KEY", "")
 if not _gemini_key:
     raise RuntimeError("GEMINI_API_KEY is not set. Add it to your .env file or environment.")
 genai.configure(api_key=_gemini_key)
-gemini_model = genai.GenerativeModel("gemini-1.5-flash")
+gemini_model = genai.GenerativeModel("gemini-2.5-flash")
+
+# Mount all extended feature endpoints (Features 1–10)
+# Mounted after API clients are initialized to respect startup order
+app.include_router(features_router)
 
 # ---------------------------------------------------------------------------
 # In-Memory Database
@@ -317,7 +318,7 @@ async def assess_patient(
                 {"role": "system", "content": TRIAGE_SYSTEM_PROMPT},
                 {"role": "user", "content": triage_prompt},
             ],
-            temperature=0.2,cd fronten
+            temperature=0.2,
             max_tokens=1024,
         )
         raw_output = chat_response.choices[0].message.content
@@ -353,7 +354,7 @@ async def assess_patient(
         ocr_notes=ocr_notes,
         triage=triage_obj,
         status="Pending Doctor Review",
-        created_at=datetime.utcnow().isoformat() + "Z",
+        created_at=datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
     )
     PATIENT_DB.append(record.model_dump())
     return record
